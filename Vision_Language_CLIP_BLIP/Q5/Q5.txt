@@ -1,0 +1,57 @@
+While it runs, here's your written analysis for backpack that you can fill into your report:
+
+Prediction (Step 1): Success expected — same distinctive object (red backpack with patches), good texture and color contrast against background.
+
+
+Result (Step 2): Correct prediction. Matcher successfully segments the backpack despite viewpoint change (worn vs hanging) and background change (sky vs forest), showing robustness to moderate viewpoint variation.
+
+
+Feature space insight (Step 4): Matcher succeeds here because DINOv2 embeddings capture semantic and texture features (the distinctive red color, zipper texture, patches) that remain consistent across viewpoints. The matching works in feature space rather than pixel space, so absolute position doesn't matter — only feature similarity does.
+
+Q5.1 (2-3 lines on Matcher):
+
+Matcher operates by extracting dense patch-level features from both reference and target images using DINOv2, then finding correspondences between them in embedding space — this is feature matching, not pixel matching. SAM then uses these matched points as prompts to generate the final segmentation mask.
+
+
+
+
+        Grayscale: note if it still works (DINOv2 is somewhat color-invariant)
+        Blur: likely degrades (texture features lost)
+        Crop: likely struggles (partial object changes feature distribution)
+
+Q5.4 core insight:
+
+    Matcher succeeds when DINOv2 patch features of the reference and target are similar in embedding space. It is partially invariant to viewpoint and scale since DINOv2 captures semantic features, but fails under heavy appearance changes like blur or cropping since these alter the feature distribution significantly.
+Q5.3 per modification:
+Grayscale: note if it still works (DINOv2 is somewhat color-invariant)
+Blur: likely degrades (texture features lost)
+Crop: likely struggles (partial object changes feature distribution)
+
+Q5.4 core insight:
+Dog (grayscale) ✅ Still works:
+
+Removing color from the reference didn't break segmentation — Matcher still correctly identified the dog. This shows Matcher primarily relies on shape and texture features from DINOv2, not color. DINOv2 patch embeddings are rich enough to match structural features even without color information.
+
+Can (blur) ✅ Still works:
+
+Even with a blurred reference, the can is correctly segmented. This is surprising — it suggests Matcher relies on overall shape and color distribution (the blue can shape is still visible even blurred) more than fine texture details like text.
+
+Sneaker (crop) ✅ Still works:
+
+Even with only a partial view of the sneaker as reference (cropped to bottom half), Matcher correctly segments the full shoe. This shows Matcher is robust to partial occlusion — the visible features (distinctive color pattern, sole shape) are sufficient for matching.
+
+Core insight for Q5.4:
+Dog (grayscale) ✅ Still works:
+
+Removing color from the reference didn't break segmentation — Matcher still correctly identified the dog. This shows Matcher primarily relies on shape and texture features from DINOv2, not color. DINOv2 patch embeddings are rich enough to match structural features even without color information.
+
+Can (blur) ✅ Still works:
+Even with a blurred reference, the can is correctly segmented. This is surprising — it suggests Matcher relies on overall shape and color distribution (the blue can shape is still visible even blurred) more than fine texture details like text.
+
+Sneaker (crop) ✅ Still works:
+
+Even with only a partial view of the sneaker as reference (cropped to bottom half), Matcher correctly segments the full shoe. This shows Matcher is robust to partial occlusion — the visible features (distinctive color pattern, sole shape) are sufficient for matching.
+These results show Matcher is surprisingly robust — invariant to color removal, blur, and partial cropping. This is because DINOv2 features capture high-level semantic and structural information that persists under these transformations. However, Matcher would likely fail with extreme appearance changes like heavy noise or completely different viewpoints where feature similarity breaks down entirely.
+Matcher succeeds when DINOv2 patch features of the reference and target are similar in embedding space. It is partially invariant to viewpoint and scale since DINOv2 captures semantic features, but fails under heavy appearance changes like blur or cropping since these alter the feature distribution significantly.
+
+

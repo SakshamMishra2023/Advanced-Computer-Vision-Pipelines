@@ -1,0 +1,28 @@
+BLIP aligns image regions with text using a visual encoder (ViT) that produces patch-level embeddings, which are then cross-attended to by a text decoder. The image-grounded text encoder uses cross-attention at each layer to fuse visual and textual features, allowing token representations to be conditioned on specific spatial regions of the image. However, BLIP lacks explicit bounding-box supervision, so its spatial reasoning is implicit — it can often identify what is present but struggles with precise where (e.g., left/right/behind relationships).
+
+BLIP gives broadly consistent answers for direct location questions but becomes vaguer or shifts phrasing for relational questions (e.g., "relative to the man"), suggesting it relies more on language priors than precise spatial grounding.                    
+
+               Question     BLIP Answer
+               Where is the dog present in the image? in man ' s arms
+Can you tell where the dog is located in the picture?             yes
+    In which part of the image is the dog positioned?            back
+   Where is the dog relative to the man in the image?          behind
+      Describe the location of the dog using context.          behind
+  What is the dog doing and where is it in the scene?      being held
+
+
+
+BLIP's answer for the man's location tends to be less specific than for the dog — it often defaults to generic responses like "in the image" rather than spatial descriptors. This suggests a possible bias toward objects that are more visually salient or commonly described in training captions (dogs are frequent subjects in web image-text pairs).
+Q: Where is the man present in the image?
+A: living room
+
+
+Dog-location questions cluster tightly in embedding space, while the man question sits apart — indicating BLIP encodes subject identity more distinctly than spatial phrasing variations.
+
+
+Written notes for Q2.4 (i) and (ii):
+
+(i) Failure/inconsistency: BLIP fails on the relational question "Where is the dog relative to the man?" — it typically ignores the relational framing and just answers as if asked a simpler location question.
+
+
+(ii) Visual grounding vs language priors: BLIP's cross-attention mechanism grounds answers in visual features, but for relational spatial queries it often defaults to language priors from training (e.g., "next to the person") rather than reasoning from the actual image layout. This is a known limitation of models without explicit spatial supervision.

@@ -1,0 +1,2 @@
+--- Part 4: Reprojection Error ---
+mean: 0.4399 px   std: 0.0693 px

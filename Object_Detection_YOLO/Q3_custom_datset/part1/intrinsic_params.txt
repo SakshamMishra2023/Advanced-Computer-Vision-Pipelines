@@ -1,0 +1,4 @@
+--- Part 1: Intrinsic Parameters ---
+focal length  is  fx: 1492.48   fy: 1491.91
+principal point  is  cx: 678.31   cy: 756.49
+skew: 0.0000

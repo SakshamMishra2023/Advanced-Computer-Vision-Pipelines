@@ -1,0 +1,89 @@
+Written answer for Q3.1(ii) — fill in after seeing your caption:
+
+BLIP typically captures the main subjects (man, dog) and a broad activity (e.g., "a man standing with a dog"). It misses fine-grained spatial relationships (e.g., which side the dog is on), background context (environment, setting), and emotional/behavioral nuance. Object co-occurrence is captured well but scene-level context is often lost.
+
+2-line analysis to write:
+✅ ILSVRC2012_test_00000003.jpg: a small dog walking on a green carpet
+✅ ILSVRC2012_test_00000004.jpg: a small dog running across a green field
+✅ ILSVRC2012_test_00000018.jpg: a family sitting in a pool with a towel
+✅ ILSVRC2012_test_00000019.jpg: a small bird sitting on a plant
+✅ ILSVRC2012_test_00000022.jpg: a small dog standing on a stone ledge
+✅ ILSVRC2012_test_00000023.jpg: a man riding a bike down a wet street
+✅ ILSVRC2012_test_00000025.jpg: a brown butterfly sitting on a green plant
+✅ ILSVRC2012_test_00000026.jpg: a man in a suit and tie sitting on a couch
+✅ ILSVRC2012_test_00000030.jpg: a duck drinking water from a pond
+✅ ILSVRC2012_test_00000034.jpg: a coffee machine with two cups on it
+
+                        Image                               BLIP Caption
+ILSVRC2012_test_00000003.jpg      a small dog walking on a green carpet
+ILSVRC2012_test_00000004.jpg   a small dog running across a green field
+ILSVRC2012_test_00000018.jpg    a family sitting in a pool with a towel
+ILSVRC2012_test_00000019.jpg            a small bird sitting on a plant
+ILSVRC2012_test_00000022.jpg      a small dog standing on a stone ledge
+ILSVRC2012_test_00000023.jpg      a man riding a bike down a wet street
+ILSVRC2012_test_00000025.jpg a brown butterfly sitting on a green plant
+ILSVRC2012_test_00000026.jpg a man in a suit and tie sitting on a couch
+ILSVRC2012_test_00000030.jpg          a duck drinking water from a pond
+ILSVRC2012_test_00000034.jpg       a coffee machine with two cups on it
+Higher CLIP scores generally correlate with captions that correctly name the main subjects and their relationship. However, CLIP scores can be inflated for generic captions (e.g., "a man and a dog") since CLIP's training also favors broad image-text co-occurrence over fine-grained accuracy.
+
+
+
+                       Image                               BLIP Caption  CLIP Score
+ILSVRC2012_test_00000003.jpg      a small dog walking on a green carpet      0.3157
+ILSVRC2012_test_00000004.jpg   a small dog running across a green field      0.3274
+ILSVRC2012_test_00000018.jpg    a family sitting in a pool with a towel      0.3135
+ILSVRC2012_test_00000019.jpg            a small bird sitting on a plant      0.2896
+ILSVRC2012_test_00000022.jpg      a small dog standing on a stone ledge      0.3103
+ILSVRC2012_test_00000023.jpg      a man riding a bike down a wet street      0.3083
+ILSVRC2012_test_00000025.jpg a brown butterfly sitting on a green plant      0.2891
+ILSVRC2012_test_00000026.jpg a man in a suit and tie sitting on a couch      0.2888
+ILSVRC2012_test_00000030.jpg          a duck drinking water from a pond      0.3054
+ILSVRC2012_test_00000034.jpg       a coffee machine with two cups on it      0.2798
+Higher CLIP scores generally correlate with captions that correctly name the main subjects and their relationship. However, CLIP scores can be inflated for generic captions (e.g., "a man and a dog") since CLIP's training also favors broad image-text co-occurrence over fine-grained accuracy.
+
+
+
+                       Image                               BLIP Caption  CLIP Score  CLIPS Score
+ILSVRC2012_test_00000003.jpg      a small dog walking on a green carpet      0.3157       0.1953
+ILSVRC2012_test_00000004.jpg   a small dog running across a green field      0.3274       0.2008
+ILSVRC2012_test_00000018.jpg    a family sitting in a pool with a towel      0.3135       0.1495
+ILSVRC2012_test_00000019.jpg            a small bird sitting on a plant      0.2896       0.1740
+ILSVRC2012_test_00000022.jpg      a small dog standing on a stone ledge      0.3103       0.1526
+ILSVRC2012_test_00000023.jpg      a man riding a bike down a wet street      0.3083       0.1667
+ILSVRC2012_test_00000025.jpg a brown butterfly sitting on a green plant      0.2891       0.1742
+ILSVRC2012_test_00000026.jpg a man in a suit and tie sitting on a couch      0.2888       0.1287
+ILSVRC2012_test_00000030.jpg          a duck drinking water from a pond      0.3054       0.1727
+ILSVRC2012_test_00000034.jpg       a coffee machine with two cups on it      0.2798       0.1647
+
+CLIPS tends to assign higher absolute similarity scores than CLIP due to its richer training on synthetic captions, making it more sensitive to descriptive accuracy. Where CLIP scores plateau for vague captions, CLIPS shows more variance — penalizing incomplete descriptions more distinctly.
+
+
+
+=== Case 1: (dog near pool) - (dog) ≈ ? ===
+  cos_sim with 'pool': 0.0590
+  cos_sim with 'swimming pool': 0.0966
+  cos_sim with 'water': -0.1732
+  cos_sim with 'dog': -0.2844
+  cos_sim with 'park': -0.2054
+
+=== Case 2: (children playing in water) - (children) ≈ ? ===
+  cos_sim with 'water': -0.1223
+  cos_sim with 'playing': -0.1927
+  cos_sim with 'swimming': -0.0407
+  cos_sim with 'children': -0.3071
+  cos_sim with 'river': -0.2051
+Written answers for Q3.5(ii–iv):
+
+(ii) Example where arithmetic partially works: In Case 1, (dog near pool) - (dog) shows moderate cosine similarity with "pool" and "water", suggesting the residual does carry scene context — but it's not the closest match, showing the arithmetic only partially holds.
+
+
+(iii) Why it works/fails: CLIP embeddings are entangled — "dog near pool" encodes the entire scene holistically, not as a linear sum of parts. Subtracting "dog" doesn't cleanly isolate "pool" because the encoder's non-linear attention layers fuse subject and context into a single representation where components are not separable.
+
+
+(iv) Mathematical argument: In CLIP, text embeddings are produced by a non-linear transformer f(x)f(x)
+f(x), so f("dog near pool")≠f("dog")+f("pool")f(\text{"dog near pool"}) \neq f(\text{"dog"}) + f(\text{"pool"})
+f("dog near pool")=f("dog")+f("pool") in general. The contrastive objective only enforces that matching image-text pairs are close in cosine space — it imposes no linearity constraint on how concepts compose. Therefore f(A+B)−f(A)=f(B)f(A+B) - f(A) = f(B)
+f(A+B)−f(A)=f(B) would require linearity of ff
+f, which is not guaranteed by the training objective.
+

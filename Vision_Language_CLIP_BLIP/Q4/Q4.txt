@@ -1,0 +1,30 @@
+For your written analysis on Q4.4, note these points after seeing results:
+
+When given a nonexistent or wrong object reference, LAVT either produces an empty mask or incorrectly segments the most visually salient region — showing it falls back on visual saliency rather than strict language grounding when the text doesn't match anything in the image.
+
+Y1 feature map: ILSVRC2012_test_00000004.jpg
+ Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000018.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000019.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000022.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000023.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000025.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000026.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000030.jpg
+  Y1 raw shape: torch.Size([14400, 128])
+
+Y1 feature map: ILSVRC2012_test_00000034.jpg
+  Y1 raw shape: torch.Size([14400, 128])
